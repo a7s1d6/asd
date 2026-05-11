@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, getDocs, addDoc, deleteDoc, doc, updateDoc, orderBy, writeBatch } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { db, auth } from '../../lib/firebase';
 import { formatCurrency, handleFirestoreError, OperationType } from '../../lib/utils';
 import { Plus, Search, MoreVertical, Trash2, Edit3, X, Image as ImageIcon, Database } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -70,7 +70,7 @@ export default function ProductsManager() {
       await batch.commit();
       fetchProducts();
     } catch (err) {
-      handleFirestoreError(err, OperationType.WRITE, path);
+      handleFirestoreError(err, OperationType.WRITE, path, auth);
     } finally {
       setSeeding(false);
     }
@@ -84,7 +84,7 @@ export default function ProductsManager() {
       const snap = await getDocs(q);
       setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     } catch (err) {
-      handleFirestoreError(err, OperationType.LIST, path);
+      handleFirestoreError(err, OperationType.LIST, path, auth);
     } finally {
       setLoading(false);
     }
@@ -114,22 +114,19 @@ export default function ProductsManager() {
       setIsModalOpen(false);
       fetchProducts();
     } catch (err) {
-      handleFirestoreError(err, editingId ? OperationType.UPDATE : OperationType.CREATE, path);
+      handleFirestoreError(err, editingId ? OperationType.UPDATE : OperationType.CREATE, path, auth);
     }
   };
 
   const handleDelete = async (id: string) => {
-    alert('بدء عملية حذف المنتج: ' + id);
     const path = `products/${id}`;
     setLoading(true);
     try {
       await deleteDoc(doc(db, 'products', id));
-      alert('تم الحذف من قاعدة البيانات، جاري تحديث القائمة...');
       await fetchProducts();
-      alert('تم تحديث القائمة بنجاح');
     } catch (err: any) {
       alert('خطأ في الحذف: ' + err.message);
-      handleFirestoreError(err, OperationType.DELETE, path);
+      handleFirestoreError(err, OperationType.DELETE, path, auth);
     } finally {
       setLoading(false);
     }

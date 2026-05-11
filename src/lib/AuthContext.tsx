@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setIsAdmin(isDevEmail);
           }
         } catch (error) {
-          handleFirestoreError(error, OperationType.WRITE, path);
+          handleFirestoreError(error, OperationType.WRITE, path, auth);
         }
       } else {
         setIsAdmin(false);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { collection, query, limit, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
 import ProductCard from '../components/ProductCard';
 import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, Star, Zap } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function Home() {
         }));
         setProducts(fetchedProducts);
       } catch (error) {
-        handleFirestoreError(error, OperationType.GET, path);
+        handleFirestoreError(error, OperationType.GET, path, auth);
       } finally {
         setLoading(false);
       }

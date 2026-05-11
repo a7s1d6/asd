@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, query, getDocs, orderBy, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { db, auth } from '../../lib/firebase';
 import { formatCurrency, handleFirestoreError, OperationType } from '../../lib/utils';
 import { Search, Eye, CheckCircle2, Truck, XCircle, Clock, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -16,7 +16,7 @@ export default function OrdersManager() {
       const snap = await getDocs(q);
       setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     } catch (err) {
-      console.error(err);
+      handleFirestoreError(err, OperationType.LIST, 'orders', auth);
     } finally {
       setLoading(false);
     }
@@ -31,21 +31,18 @@ export default function OrdersManager() {
       await updateDoc(doc(db, 'orders', orderId), { status });
       fetchOrders();
     } catch (err: any) {
-      handleFirestoreError(err, OperationType.UPDATE, `orders/${orderId}`);
+      handleFirestoreError(err, OperationType.UPDATE, `orders/${orderId}`, auth);
     }
   };
 
   const handleDelete = async (orderId: string) => {
-    alert('بدء عملية حذف الطلب: ' + orderId);
     setLoading(true);
     try {
       await deleteDoc(doc(db, 'orders', orderId));
-      alert('تم الحذف من قاعدة البيانات، جاري تحديث القائمة...');
       await fetchOrders();
-      alert('تم تحديث القائمة بنجاح');
     } catch (err: any) {
       alert('خطأ في الحذف: ' + err.message);
-      handleFirestoreError(err, OperationType.DELETE, `orders/${orderId}`);
+      handleFirestoreError(err, OperationType.DELETE, `orders/${orderId}`, auth);
     } finally {
       setLoading(false);
     }
