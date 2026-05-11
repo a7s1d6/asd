@@ -1,0 +1,13 @@
+{
+  "name": "سوقي - متجر إلكتروني متكامل",
+  "description": "منصة تجارة إلكترونية متطورة تدعم اللغة العربية، تعدد العملات، ونظام إدارة قوي للطلبات والمنتجات مع تحليلات ذكية.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "E-commerce",
+    "Admin Dashboard",
+    "Multi-currency",
+    "Real-time Updates"
+  ]
+}

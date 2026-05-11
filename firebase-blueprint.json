@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product Entity",
+      "description": "Represents a single item for sale in the store.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name_ar": { "type": "string", "description": "Product name in Arabic" },
+        "name_en": { "type": "string", "description": "Product name in English" },
+        "description_ar": { "type": "string" },
+        "description_en": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string", "enum": ["USD", "SAR", "AED", "EGP", "KWD"] },
+        "stock": { "type": "integer" },
+        "categoryId": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "integer" },
+        "seoTitle": { "type": "string" },
+        "seoDescription": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name_ar", "price", "currency", "stock", "categoryId"]
+    },
+    "Category": {
+      "title": "Category Entity",
+      "description": "Groups products together.",
+      "type": "object",
+      "properties": {
+        "name_ar": { "type": "string" },
+        "name_en": { "type": "string" },
+        "image": { "type": "string" },
+        "description_ar": { "type": "string" }
+      },
+      "required": ["name_ar"]
+    },
+    "Order": {
+      "title": "Order Entity",
+      "description": "Represents a customer purchase.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "delivered", "cancelled"] },
+        "totalAmount": { "type": "number" },
+        "currency": { "type": "string" },
+        "items": { "type": "array" },
+        "shippingAddress": { "type": "object" },
+        "paymentMethod": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "User": {
+      "title": "User Entity",
+      "description": "System users (customers and admins).",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "customer"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Coupon": {
+      "title": "Coupon Entity",
+      "properties": {
+        "code": { "type": "string" },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "discountValue": { "type": "number" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "active": { "type": "boolean" }
+      }
+    },
+    "Review": {
+      "title": "Review Entity",
+      "properties": {
+        "productId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "rating": { "type": "integer" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Individual product details"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Product categories"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/coupons/{couponId}": {
+      "schema": "Coupon",
+      "description": "Discount coupons"
+    },
+    "/products/{productId}/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Reviews for a specific product"
+    },
+    "/analytics/dailyStats": {
+      "schema": "object",
+      "description": "Aggregated daily statistics"
+    }
+  }
+}
